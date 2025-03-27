@@ -1,0 +1,69 @@
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export async function middleware(req: NextRequest) {
+  // Create a response object that we can modify
+  const res = NextResponse.next();
+
+  try {
+    // Create supabase client
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return req.cookies.getAll().map(({ name, value }) => ({
+              name,
+              value,
+            }));
+          },
+          setAll(cookiesToSet) {
+            // Create a new response to avoid the "headers already sent" error
+            cookiesToSet.forEach(({ name, value, options }) => {
+              res.cookies.set({
+                name,
+                value,
+                ...options,
+              });
+            });
+          },
+        },
+      },
+    );
+
+    // Refresh session if expired - required for Server Components
+    await supabase.auth.getSession();
+
+    // Protected routes check
+    if (req.nextUrl.pathname.startsWith("/dashboard")) {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        return NextResponse.redirect(new URL("/sign-in", req.url));
+      }
+    }
+
+    return res;
+  } catch (e) {
+    // If there's an error, just continue without auth
+    return res;
+  }
+}
+
+// Ensure the middleware is only called for relevant paths
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public (public files)
+     * - api/payments/webhook (webhook endpoints)
+     */
+    "/((?!_next/static|_next/image|favicon.ico|public|api/payments/webhook).*)",
+  ],
+};

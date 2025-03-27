@@ -1,0 +1,7 @@
+# Netlify specific gitignore
+
+# Supabase Edge Functions
+supabase/functions/
+
+# Local Netlify folder
+.netlify
