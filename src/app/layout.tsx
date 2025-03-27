@@ -11,6 +11,12 @@ export const metadata: Metadata = {
   title: "GTM LABS",
   description:
     "Expert product marketing services on-demand, at a fraction of the cost",
+  icons: {
+    icon: "/gtm-labs-logo.png",
+    apple: "/gtm-labs-logo.png",
+    shortcut: "/gtm-labs-logo.png",
+    favicon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
