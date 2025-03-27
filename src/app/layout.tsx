@@ -12,10 +12,9 @@ export const metadata: Metadata = {
   description:
     "Expert product marketing services on-demand, at a fraction of the cost",
   icons: {
-    icon: "/gtm-labs-logo.png",
-    apple: "/gtm-labs-logo.png",
-    shortcut: "/gtm-labs-logo.png",
-    favicon: "/favicon.ico",
+    icon: "/gtm-labs-logo",
+    apple: "/gtm-labs-logo",
+    shortcut: "/gtm-labs-logo",
   },
 };
 
@@ -28,6 +27,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className="dark">
       <head>
         <Script src="https://api.tempolabs.ai/proxy-asset?url=https://storage.googleapis.com/tempo-public-assets/error-handling.js" />
+        <link rel="icon" href="/gtm-labs-logo" type="image/png" />
       </head>
       <body className={inter.className}>
         <ThemeProvider
